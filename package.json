@@ -1,0 +1,17 @@
+{
+  "name": "tugas-1",
+  "version": "1.0.0",
+  "description": "REST API Mahasiswa - Tugas 1 Integrasi Sistem",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
