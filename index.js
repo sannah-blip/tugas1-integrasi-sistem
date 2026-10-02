@@ -54,7 +54,7 @@ app.get('/view', (req, res) => {
 });
 
 app.get('/presentasi', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'mahasiswa.html'));
 });
 
 app.get('/tampilan', (req, res) => {
@@ -63,6 +63,14 @@ app.get('/tampilan', (req, res) => {
 
 app.get('/mahasiswa-view', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.get('/data', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'mahasiswa.html'));
+});
+
+app.get('/table', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'mahasiswa.html'));
 });
 
 // Root endpoint
