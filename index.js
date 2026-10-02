@@ -33,19 +33,50 @@ const swaggerSpec = swaggerJsdoc(swaggerOptions);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Serve static files
+const path = require('path');
+
 // Swagger UI
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Import routes
 const mahasiswaRoutes = require('./routes/mahasiswa');
 
-// Gunakan routes
+// Gunakan routes (API routes dulu)
 app.use('/api/mahasiswa', mahasiswaRoutes);
+
+// Serve static files
+app.use(express.static(path.join(__dirname, 'public')));
+
+// View endpoints - harus didefinisikan setelah static atau sebagai fallback
+app.get('/view', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.get('/presentasi', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.get('/tampilan', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.get('/mahasiswa-view', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 // Root endpoint
 app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Info endpoint
+app.get('/info', (req, res) => {
   res.json({
     message: 'REST API Mahasiswa - Tugas 1 Integrasi Sistem',
+    view: 'http://localhost:3000/mahasiswa-view',
+    presentasi: 'http://localhost:3000/presentasi',
+    tampilan: 'http://localhost:3000/tampilan',
     documentation: 'http://localhost:3000/api-docs',
     endpoints: {
       'GET /api/mahasiswa': 'Mendapatkan semua data mahasiswa',

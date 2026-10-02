@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Mahasiswa</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: #f5f7fa;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #2d3748;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+        }
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+            transition: transform 0.2s, box-shadow 0.2s;
+            border-left: 4px solid #4299e1;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 20px;
+        }
+        .nama {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+        .id-badge {
+            background: #4299e1;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .info-row {
+            display: flex;
+            align-items: start;
+            margin-bottom: 15px;
+            gap: 12px;
+        }
+        .label {
+            font-weight: 600;
+            color: #4a5568;
+            min-width: 80px;
+        }
+        .value {
+            color: #2d3748;
+            flex: 1;
+            line-height: 1.5;
+        }
+        .stats {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .stat-item {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            background: #f7fafc;
+            border-radius: 8px;
+        }
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #4299e1;
+        }
+        .stat-label {
+            font-size: 0.85rem;
+            color: #718096;
+            margin-top: 5px;
+        }
+        .refresh-btn {
+            display: block;
+            margin: 40px auto 0;
+            padding: 12px 30px;
+            background: #4299e1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .refresh-btn:hover {
+            background: #3182ce;
+        }
+        .loading {
+            text-align: center;
+            color: #718096;
+            font-size: 1.2rem;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Data Mahasiswa</h1>
+        <div id="mahasiswa-list" class="card-grid">
+            <div class="loading">Memuat data...</div>
+        </div>
+        <button class="refresh-btn" onclick="loadMahasiswa()">Refresh Data</button>
+    </div>
+
+    <script>
+        async function loadMahasiswa() {
+            const container = document.getElementById('mahasiswa-list');
+            container.innerHTML = '<div class="loading">Memuat data...</div>';
+            try {
+                const response = await fetch('/api/mahasiswa');
+                const result = await response.json();
+                if (result.success) {
+                    displayMahasiswa(result.data);
+                } else {
+                    container.innerHTML = '<div class="loading">Gagal memuat data</div>';
+                }
+            } catch (error) {
+                container.innerHTML = '<div class="loading">Error: ' + error.message + '</div>';
+            }
+        }
+
+        function displayMahasiswa(data) {
+            const container = document.getElementById('mahasiswa-list');
+            if (data.length === 0) {
+                container.innerHTML = '<div class="loading">Tidak ada data mahasiswa</div>';
+                return;
+            }
+            container.innerHTML = data.map(mhs => `
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="nama">${escapeHtml(mhs.nama)}</div>
+                        </div>
+                        <div class="id-badge">ID: ${mhs.id}</div>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Alamat</span>
+                        <span class="value">${escapeHtml(mhs.alamat)}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Hobi</span>
+                        <span class="value">${escapeHtml(mhs.hobi)}</span>
+                    </div>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <div class="stat-value">${mhs.ipk}</div>
+                            <div class="stat-label">IPK</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">Semester ${mhs.semester}</div>
+                            <div class="stat-label">Semester</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function escapeHtml(text) {
+            if (typeof text !== 'string') return text;
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        loadMahasiswa();
+    </script>
+</body>
+</html>
